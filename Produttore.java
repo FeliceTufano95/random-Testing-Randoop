@@ -26,7 +26,7 @@ import org.jfree.ui.TextAnchor;
 
 public class Produttore  extends Thread{
 	private ClasseCondivisa c;
-	private ArrayList<Integer> arrayLOC; //conterr‡ i valori di LOC della sessione
+	private ArrayList<Integer> arrayLOC; //conterr√† i valori di LOC della sessione
 	
 	public Produttore(ClasseCondivisa c) {
 		this.c = c;
@@ -42,7 +42,7 @@ public class Produttore  extends Thread{
 	private void incrementValue(Map<String,Integer> map, String key)
     {
         Integer count = map.get(key);
-        //se non c'Ë nessun errore nella lista lo inserico con conteggio 1
+        //se non c'√® nessun errore nella lista lo inserico con conteggio 1
          if (count == null) {
             map.put(key, 1);
         }
@@ -99,7 +99,7 @@ public class Produttore  extends Thread{
 	
 			boolean takeNext = false;
 	
-			String ultimaLinea = ""; //mi servir‡ per prendere l'ultima linea letta cioË quella con i test eseguiti
+			String ultimaLinea = ""; //mi servir√† per prendere l'ultima linea letta cio√® quella con i test eseguiti
 			//String testo = "";
 			while (linea != null){ 
 				try {
@@ -111,7 +111,7 @@ public class Produttore  extends Thread{
 						incrementValue(map, linea);
 						takeNext = false;
 					}
-					//se la linea inizia con un numero seguito da ) vuol dire che Ë il fallimento di un test (suppongo non pi˘ di 99 test)
+					//se la linea inizia con un numero seguito da ) vuol dire che √® il fallimento di un test (suppongo non pi√π di 99 test)
 					if(linea!= null && linea.matches("^[0-9].*$") && ((linea.indexOf(")")==1||linea.indexOf(")")==2)))
 						takeNext = true;
 					
@@ -139,7 +139,7 @@ public class Produttore  extends Thread{
 			return testEseguiti;
 	 }
 	 
-	 //verr‡ chiamata quando verr‡ raggiunto il 60% di coverage
+	 //verr√† chiamata quando verr√† raggiunto il 60% di coverage
 	 private void reachedCoverageT60(int indice, int coverage) {
 		XYLineAnnotation line = new XYLineAnnotation(indice, 0, indice, coverage, new BasicStroke(1.0f), Color.BLACK);
  		
@@ -230,7 +230,7 @@ public class Produttore  extends Thread{
 		int cicli = 0;
 		
 		//VARIABILI RELATIVE ALL'ESECUZIONE DEI TEST JUNIT
-		 Map<String, Integer> mapErrori = new HashMap<String, Integer>(); //conterr‡ la lista degli errori: errore->occorrenza
+		 Map<String, Integer> mapErrori = new HashMap<String, Integer>(); //conterr√† la lista degli errori: errore->occorrenza
          
          int fileEsecuzioneLetti=0; //contatore dei file contententi i risultati di una esecuizione di ErrorTest.java letti
          int cicloEsecuzioneTest=0; 
@@ -314,7 +314,7 @@ public class Produttore  extends Thread{
 								reachedT50 = reachedCoverageT50(i, this.arrayLOC);
 						
 						//AIO
-						//controllo bruttissimo per assicurarmi che sia stata creata la serie Unione_Sessioni
+						//controllo per assicurarmi che sia stata creata la serie Unione_Sessioni
 						if(cicli>4) {
 							if(!Run.getDatasetLOC().getSeries("Unione_Sessioni").isEmpty()) {
 								System.out.println("chiamo AIO su indice: "+lastIndexAIO);
@@ -328,7 +328,7 @@ public class Produttore  extends Thread{
 				cicli = this.arrayLOC.size();
 				
 				//L'ASSUNZIONE CHE FACCIO E' CHE CI SIA CORRISPONDENZA TEMPORALE TRA GLI ERRORTEST PRODTTI I DATI DI COPERTURA
-				//se esiste la cartella ErroTest corrispondente e se il file ErrorTest Ë stato modificato, vado a eseguire i test
+				//se esiste la cartella ErroTest corrispondente e se il file ErrorTest √® stato modificato, vado a eseguire i test
 				
 				if(primaEsecuzioneTest) {
 					if(fileEsecuzioneTest.exists()) {
@@ -386,18 +386,11 @@ public class Produttore  extends Thread{
 					
 					pw.close();
 				
-					//DEVI AGGIORNARE IL GRAFICO SOLO SE C'Ë STATO UN CAMBIAMENTO ALTRIMETNI STAMPA SEMPRE LO STESSO
 					seriesError.add(testEseguiti, testFalliti);
 				}
 				c.scritturaFileCondiviso(testo, getName());
-				/*
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					System.out.println("ECCEZIONE SULLA SLEEP DEL PRODUTTORE");
-					e.printStackTrace();
-				}*/
+				
+				
 				
 			}
 		}
