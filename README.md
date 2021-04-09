@@ -1,17 +1,23 @@
 # random-Testing-Randoop
 Esecuzione di testing causuale mediante Randoop con valutazione della copertura raggiunta e test eseguiti
 
-SCRIPT:
-•	starter6Randoop: esso crea in modo iterativo dei cicli di test lanciando Randoop. Per ogni ciclo vengono prodotti, oltre agli eventuali  ErrorTest,  tutti i file relativi alla copertura della sessione al crescere dei cicli, e i file relativi all’unione delle coperture. In particolare il file “SessioncoverageLOC” che contiene le percentuali di LOC coperte dall’unione  dei cicli della sessione al crescere dei cicli, è quello che verrà utilizzato per ottenere una lettura in tempo reale dell’andamento. Questo script prende in ingresso i seguenti parametri: nome dell’applicazione da testare, quantità di tempo da dedicare ad ogni classe per la generazione dei test (ossia il time limit usato da Randoop per generare test), id del thread rappresentativo della sessione (che verrà utilizzato per distinguere le varie sessioni tra di loro). Questi parametri verranno passati allo script automaticamente dal programma scritto in Java; 
-•	createCoverageUnion: calcola l’unione delle coperture raggiunte dalle varie sessioni al crescere dei cicli, attendendo ad  ogni ciclo la creazione degli n file “coverageUnion.es” da parte delle n sessioni e ne effettua il merge di volta in volta, i risultati prodotti verranno messi in una cartella chiamata “coverageunion”;
-•	esecuzione_test: utilizzato per l’esecuzione dei test JUnit, crea un file txt per ogni esecuzione riportandone l’esito. In particolare il programma principale ad ogni ciclo controlla se è stato prodotto il relativo file “ErrorTest”, in termini pratici ciò equivale ad effettuare un controllo sulla data di modifica di questo file (questo perché ad ogni nuova creazione Randoop sovrascriverà il file ErrorTest.java), se la data è cambiata vuol dire che al ciclo corrente sono stati prodotti dei nuovi test e si può procedere con la loro esecuzione.
+Prima di poter eseguire l’applicazione bisogna assicurarsi che ci sia, tra i vari file, una cartella con lo stesso nome dell’applicazione che si intende
+testare, all'interno della quale devono essere presenti tutti i file jar da cui l’applicazione testata dipende. Questi file possono essere ricavati dalla 
+cartella “jars”. Per gli esempi riportati è stata effettuata questa operazione per l'applicazione "jipa". 
+
+All’interno della cartella “src” è presente il package runTests all’interno del quale si trovano i file .java dell’applicazione, mentre nel package runTests
+della cartella “bin” sono presenti i file .class.
+Per eseguire l’applicazione ci sono tre possibilità:
+
+1.	Importare l’intera cartella come progetto in Eclipse, aggiungendo i file jar “jcommon-1.0.23” e “jfreechart-1.0.19” che si trovano nella cartella
+ 	“external_jars” all’interno del Build Path di progetto. Dopodichè si può eseguire il tutto.
+2.	Lanciare l’applicazione da linea di comando, dopo essersi posizionati all’interno della cartella generale che contiene tutti i file, 
+	mediante il comando: java -cp .\external_jars\jcommon-1.0.23.jar;.\external_jars\jfreechart-1.0.19.jar;.\bin runTests.Run
+3.	Lanciare l’applicazione mediante eseguibile jar, dopo essersi posizionati all’interno della cartella generale, mediante il comando: 
+	java -jar run.jar
 
 
+Il programma è stato sviluppato in un ambiante di esecuzione "JavaSE-13" e JDK 13, ma è stato testato anche per la versione 16.
 
-Il programma è stato sviluppato in un ambiante di esecuzione "JavaSE-13" e JDK 13.Per eseguirlo bisogna includere all'interno del build path del progetto i due
-JAR "JCommon e JFreeChart" che servono per la generazione dei  grafici, entrambi situati all'interno della cartella "external_jars". 
-
-Quando si testa un'applicazione bisogna assicurarsi è che ci sia una cartella con il suo stesso nome (nella folder generale), all'interno della quale ci siano tutti i file jar necessari all'esecuzione dei test JUnit. La classe che dovrà essere lanciata per l'esecuzione dell'applicativo è "Run.class", il sorgente è situato nella cartella src.
-
-Per la documentazione dettagliata e un esempio di utilizzo completo, consultare il file "Random Testing Tufano.pdf".
+Per una documentazione dettagliata consultare il file "Random Testing Tufano.pdf"
 
