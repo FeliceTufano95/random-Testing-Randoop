@@ -2,8 +2,7 @@
 Esecuzione di testing causuale mediante Randoop con valutazione della copertura raggiunta e test eseguiti
 
 Prima di poter eseguire l’applicazione bisogna assicurarsi che ci sia, tra i vari file, una cartella con lo stesso nome dell’applicazione che si intende
-testare, all'interno della quale devono essere presenti tutti i file jar da cui l’applicazione testata dipende. Questi file possono essere ricavati dalla 
-cartella “jars”. Per gli esempi riportati è stata effettuata questa operazione per l'applicazione "jipa". 
+testare, all'interno della quale devono essere presenti tutti i file jar da cui l’applicazione testata dipende. Per gli esempi riportati è stata effettuata questa operazione per l'applicazione "jipa". 
 
 All’interno della cartella “src” è presente il package runTests all’interno del quale si trovano i file .java dell’applicazione, mentre nel package runTests
 della cartella “bin” sono presenti i file .class.
