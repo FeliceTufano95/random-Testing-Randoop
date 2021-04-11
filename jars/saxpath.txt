@@ -1,0 +1,16 @@
+org.saxpath.SAXPathException
+org.saxpath.XPathReader
+org.saxpath.SAXPathEventSource
+org.saxpath.SAXPathParseException
+com.werken.saxpath.DefaultXPathHandler$Singleton
+org.saxpath.Operator
+com.werken.saxpath.TokenTypes
+org.saxpath.XPathSyntaxException
+org.saxpath.Axis
+com.werken.saxpath.Token
+org.saxpath.XPathHandler
+org.saxpath.helpers.XPathReaderFactory
+com.werken.saxpath.DefaultXPathHandler
+org.saxpath.conformance.ConformanceXPathHandler
+com.werken.saxpath.XPathLexer
+com.werken.saxpath.XPathReader
