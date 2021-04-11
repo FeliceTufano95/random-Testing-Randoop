@@ -17,10 +17,12 @@ set seedvalue=!RANDOM!
 rem ******* CAMBIO MOMENTANEAMENTE LA JAVA VERSION PER FAR FUNZIONARE EMMA*******
 java -version
 echo Setting JAVA_HOME
-rem set JAVA_HOME=.\java\java.exe
-echo setting PATH
+rem set JAVA_HOME=.\java
+rem echo JAVA_HOME = %JAVA_HOME%
 rem set PATH=.\java\java.exe;%PATH%"
-echo Display java version
+echo Display java version 1
+".\java-1.8\jre1.8.0_281\bin\java.exe" -version
+echo Display Java version 2
 ".\java-1.8\java.exe" -version
 REM percorso della cartella dove è ubicato il JAR di EMMA
 set emmapath=".\emma-2.0.5312\lib\emma.jar"
@@ -31,7 +33,7 @@ REM imposta denominazione cartella con data e ora di avvio del test
 for /f "tokens=1-6 delims=.,:/ " %%a in ("%date% %time%") do set mydatetime=%name%-%%c-%%b-%%a_%%d-%%e-%%f_%thread%
 
 REM instrumentazione dell'archivio jar e creazione della cartella per contenere gli output
-".\java-1.8\java.exe" -noverify -cp %emmapath% emma instr -m fullcopy -d %mydatetime% -cp ".\jars\%name%.jar;.\jars\lib\*" -ix @myfilters.txt -out %mydatetime%\coverage.em
+".\java-1.8\jre1.8.0_281\bin\java.exe" -noverify -cp %emmapath% emma instr -m fullcopy -d %mydatetime% -cp ".\jars\%name%.jar;.\jars\lib\*" -ix @myfilters.txt -out %mydatetime%\coverage.em
 pause
 
 set /a cycle=0
@@ -52,7 +54,7 @@ for /L %%N in (1,1,%sequences%) do (
 	REM esegui la sessione e salva le coperture in un file .ec
 	REM java -noverify -cp "%mydatetime%\lib\%name%.jar";%emmapath%;ripper.jar ripper.RipperApplicationTest %mydatetime%\lib\%name%.jar 1 %iterations% 0 !seedvalue!
 		
-	".\java-1.8\java.exe" -noverify -cp "%mydatetime%\lib\%name%.jar";%emmapath%;randoop-all-3.0.6.jar randoop.main.Main gentests --classlist=jars\%name%.txt --timelimit=%timelimit% --randomseed=!RANDOM! --no-regression-tests=true --junit-output-dir=ErrorTest_%thread%
+	".\java-1.8\jre1.8.0_281\bin\java.exe" -noverify -cp "%mydatetime%\lib\%name%.jar";%emmapath%;randoop-all-3.0.6.jar randoop.main.Main gentests --classlist=jars\%name%.txt --timelimit=%timelimit% --randomseed=!RANDOM! --no-regression-tests=true --junit-output-dir=ErrorTest_%thread%
 	
 	rem se la cartella per contenere i test è stata creata copia al suo interno i file che servono per la loro esecuzione
 	if exist ErrorTest_%thread% (
@@ -68,17 +70,17 @@ for /L %%N in (1,1,%sequences%) do (
 	del coverage.ec
 		
 	REM genera il report testuale effettuato il merge con i metadati del file .em
-	".\java-1.8\java.exe" -cp %emmapath% emma report -r txt -Dreport.txt.out.file=%mydatetime%\coverage%cycle%-%thread%-%%N.txt -in %mydatetime%\coverage.em,%mydatetime%\coverage%cycle%-%thread%-%%N.ec
+	".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma report -r txt -Dreport.txt.out.file=%mydatetime%\coverage%cycle%-%thread%-%%N.txt -in %mydatetime%\coverage.em,%mydatetime%\coverage%cycle%-%thread%-%%N.ec
 		
 
 	REM fondi i file .em e .ec in un unico file .es
-	".\java-1.8\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverage.em,%mydatetime%\coverage%cycle%-%thread%-%%N.ec -out %mydatetime%\coverage%cycle%-%thread%-%%N.es
+	".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverage.em,%mydatetime%\coverage%cycle%-%thread%-%%N.ec -out %mydatetime%\coverage%cycle%-%thread%-%%N.es
 			
 	REM fusione dei risultati ottenuti in un unico file per ottenere la copertura degli eventi per la sessione corrente
 	if exist %mydatetime%\coverageunion%cycle%-%thread%.es 		(
-		".\java-1.8\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverage%cycle%-%thread%-%%N.es,%mydatetime%\coverageunion%cycle%-%thread%.es -out %mydatetime%\coverageunion%cycle%-%thread%.es
+		".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverage%cycle%-%thread%-%%N.es,%mydatetime%\coverageunion%cycle%-%thread%.es -out %mydatetime%\coverageunion%cycle%-%thread%.es
 	) else 		(
-		".\java-1.8\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverage%cycle%-%thread%-%%N.es -out %mydatetime%\coverageunion%cycle%-%thread%.es
+		".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverage%cycle%-%thread%-%%N.es -out %mydatetime%\coverageunion%cycle%-%thread%.es
 	)
 		
 		
@@ -90,17 +92,17 @@ REM per non perdere questo valore (poichè ad ogni ciclo effettuo una nuova unio
 	
 REM fusione dei risultati ottenuti in un unico file per ogni sessione per ottenere la copertura totale di ogni sessione
 if exist %mydatetime%\coverageunion%thread%.es (
-	".\java-1.8\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverageunion%cycle%-%thread%.es,%mydatetime%\coverageunion%thread%.es -out %mydatetime%\coverageunion%thread%.es
+	".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverageunion%cycle%-%thread%.es,%mydatetime%\coverageunion%thread%.es -out %mydatetime%\coverageunion%thread%.es
 	REM echo esiste
 ) else 		(
-	".\java-1.8\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverageunion%cycle%-%thread%.es -out %mydatetime%\coverageunion%thread%.es
+	".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverageunion%cycle%-%thread%.es -out %mydatetime%\coverageunion%thread%.es
 	REM echo non esiste
 )
 copy %mydatetime%\coverageunion%thread%.es %mydatetime%\cumulativecoverageunion%cycle%-%thread%.es
 		
 REM genera il report della copertura degli eventi
 REM per output in HTML: -r html -Dreport.html.out.file=%mydatetime%\coverageunion\index.html
-".\java-1.8\java.exe" -cp %emmapath% emma report -r txt -Dreport.txt.out.file=%mydatetime%\unioneSequenzeDellaSessione_%thread%_perCicliCrescenti.txt -in %mydatetime%\coverageunion%thread%.es
+".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma report -r txt -Dreport.txt.out.file=%mydatetime%\unioneSequenzeDellaSessione_%thread%_perCicliCrescenti.txt -in %mydatetime%\coverageunion%thread%.es
 copy %mydatetime%\unioneSequenzeDellaSessione_%thread%_perCicliCrescenti.txt %mydatetime%\cumulativecoverageunion%cycle%-%thread%.txt
 		
 		
@@ -118,15 +120,15 @@ for /F "skip=5 tokens=1-12 delims=(/)" %%a in (%mydatetime%\unioneSequenzeDellaS
 	
 REM genera il report della copertura degli eventi
 REM per output in HTML: -r html -Dreport.html.out.file=%mydatetime%\coverageunion\index.html
-".\java-1.8\java.exe" -cp %emmapath% emma report -r txt -Dreport.txt.out.file=%mydatetime%\coverageunion%cycle%-%thread%.txt -in %mydatetime%\coverageunion%cycle%-%thread%.es
+".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma report -r txt -Dreport.txt.out.file=%mydatetime%\coverageunion%cycle%-%thread%.txt -in %mydatetime%\coverageunion%cycle%-%thread%.es
 
 
 REM fusione dei risultati ottenuti in un unico file per ottenere la copertura totale sulle varie sessioni
 if exist %mydatetime%\coverageunion.es (
-	".\java-1.8\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverageunion%cycle%-%thread%.es,%mydatetime%\coverageunion.es -out %mydatetime%\coverageunion.es
+	".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverageunion%cycle%-%thread%.es,%mydatetime%\coverageunion.es -out %mydatetime%\coverageunion.es
 	REM echo esiste
 ) else 	(
-	".\java-1.8\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverageunion%cycle%-%thread%.es -out %mydatetime%\coverageunion.es
+	".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma merge -in %mydatetime%\coverageunion%cycle%-%thread%.es -out %mydatetime%\coverageunion.es
 	REM echo non esiste
 )
 
@@ -138,7 +140,7 @@ copy %mydatetime%\coverageunion.es coverageunion\coverageunion_%thread%_ciclo_%c
 
 REM genera il report della copertura totale degli eventi coverageunion DOVREBBE ESSERE L'UNIONE TOTALE
 REM per output in HTML: -r html -Dreport.html.out.file=%mydatetime%\coverageunion\index.html
-".\java-1.8\java.exe" -cp %emmapath% emma report -r txt -Dreport.txt.out.file=%mydatetime%\coverageunion.txt -in %mydatetime%\coverageunion.es
+".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma report -r txt -Dreport.txt.out.file=%mydatetime%\coverageunion.txt -in %mydatetime%\coverageunion.es
 
 REM salva su file di testo il numero di LOC coperte nell'unione totale di tutte le varie sessioni MA in questo caso perde di significato
 	set /A count=0
