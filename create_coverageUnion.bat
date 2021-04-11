@@ -19,7 +19,7 @@ set /a cycle=0
 :START
 REM fusione dei risultati ottenuti in un unico file per ottenere la copertura totale sulle varie sessioni
 set /a cycle+=1
-echo attendo che vengano creati %num% file .es da parte delle sessioni per il ciclo %cycle%
+echo attendo che vengano creati %num% file .es da parte delle sessioni per il ciclo %cycle% per poi poterne calcolare l'unione
 
 :VERIFY
 set /a counterFile=0
