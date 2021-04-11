@@ -1,20 +1,23 @@
 # random-Testing-Randoop
-Esecuzione di testing causuale mediante Randoop con valutazione della copertura raggiunta e test eseguiti
-
 Prima di poter eseguire l’applicazione bisogna assicurarsi che ci sia, tra i vari file, una cartella con lo stesso nome dell’applicazione che si intende
-testare, all'interno della quale devono essere presenti tutti i file jar da cui l’applicazione testata dipende. Per gli esempi riportati è stata effettuata questa operazione per l'applicazione "jipa". 
+testare, all'interno della quale devono essere presenti tutti i file jar da cui l’applicazione testata dipende. Questi file possono essere ricavati dalla 
+cartella “jars”. Per gli esempi riportati è stata effettuata questa operazione per le applicazioni "saxpath e jipa".
+Per l’esecuzione del programma è necessario avere sul proprio pc la jre 1.8, necessaria al corretto funzionamento di Emma. Per scaricarla è possibile utilizzare 
+il link: https://www.oracle.com/java/technologies/javase-jre8-downloads.html 
 
 All’interno della cartella “src” è presente il package runTests all’interno del quale si trovano i file .java dell’applicazione, mentre nel package runTests
 della cartella “bin” sono presenti i file .class.
 Per eseguire l’applicazione ci sono tre possibilità:
 
-1.	Importare l’intera cartella come progetto in Eclipse, aggiungendo i file jar “jcommon-1.0.23” e “jfreechart-1.0.19” che si trovano nella cartella
- 	“external_jars” all’interno del Build Path di progetto. Dopodichè si può eseguire il tutto.
-2.	Lanciare l’applicazione da linea di comando, dopo essersi posizionati all’interno della cartella generale che contiene tutti i file, 
+1.	Lanciare l’applicazione da linea di comando, dopo essersi posizionati all’interno della cartella generale che contiene tutti i file, 
 	mediante il comando: java -cp .\external_jars\jcommon-1.0.23.jar;.\external_jars\jfreechart-1.0.19.jar;.\bin runTests.Run
-3.	Lanciare l’applicazione mediante eseguibile jar, dopo essersi posizionati all’interno della cartella generale, mediante il comando: 
+2.	Lanciare l’applicazione mediante eseguibile jar, dopo essersi posizionati all’interno della cartella generale, mediante il comando: 
 	java -jar run.jar
 
+All’avvio verrà chiesto di inserire i seguenti parametri: percorso del file java.exe della jre 1.8 
+(esempio "C:\Program Files (x86)\Java\jre1.8.0_281\bin\java.exe"), numero di sessioni di test in parallelo, 
+nome dell’applicazione testata e il time limit per la generazione dei test (cioè la quantità di tempo da dedicare ad ogni classe 
+dell’applicazione testata per la generazione dei test);
 
 Il programma è stato sviluppato in un ambiante di esecuzione "JavaSE-13" e JDK 13, ma è stato testato anche per la versione 16.
 
