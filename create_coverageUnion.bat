@@ -11,7 +11,7 @@ rem echo setting PATH
 rem set PATH=java.exe;%PATH%"
 rem echo Display java version
 rem java -version
-set java1.8_path=".\java-1.8\jre1.8.0_281\bin\java.exe"
+set java1.8_path=%2
 REM percorso della cartella dove è ubicato il JAR di EMMA
 set emmapath=".\emma-2.0.5312\lib\emma.jar"
 set /a cycle=0
