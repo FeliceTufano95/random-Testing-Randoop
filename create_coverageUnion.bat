@@ -11,6 +11,7 @@ rem echo setting PATH
 rem set PATH=java.exe;%PATH%"
 rem echo Display java version
 rem java -version
+set java1.8_path=".\java-1.8\jre1.8.0_281\bin\java.exe"
 REM percorso della cartella dove è ubicato il JAR di EMMA
 set emmapath=".\emma-2.0.5312\lib\emma.jar"
 set /a cycle=0
@@ -36,17 +37,17 @@ if not %counterFile%==%num% goto VERIFY
 
 for /L %%i in (1,1,%num%) do (
 	if exist coverageunion\coverageunion.es (
-		".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma merge -in coverageunion\coverageunion_Thread-%%i_ciclo_%cycle%.es,coverageunion\coverageunion.es -out coverageunion\coverageunion.es
+		%java1.8_path% -cp %emmapath% emma merge -in coverageunion\coverageunion_Thread-%%i_ciclo_%cycle%.es,coverageunion\coverageunion.es -out coverageunion\coverageunion.es
 		REM echo esiste
 	) else 	(
-		".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma merge -in coverageunion\coverageunion_Thread-%%i_ciclo_%cycle%.es -out coverageunion\coverageunion.es
+		%java1.8_path% -cp %emmapath% emma merge -in coverageunion\coverageunion_Thread-%%i_ciclo_%cycle%.es -out coverageunion\coverageunion.es
 		REM echo non esiste
 	)
 )
 
 REM genera il report della copertura totale degli eventi coverageunion
 
-".\java-1.8\jre1.8.0_281\bin\java.exe" -cp %emmapath% emma report -r txt -Dreport.txt.out.file=coverageunion\coverageunion.txt -in coverageunion\coverageunion.es
+%java1.8_path% -cp %emmapath% emma report -r txt -Dreport.txt.out.file=coverageunion\coverageunion.txt -in coverageunion\coverageunion.es
 
 REM salva su file di testo il numero di LOC coperte nell'unione totale di tutte le varie sessioni 
 set /A count=0
