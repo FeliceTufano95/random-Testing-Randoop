@@ -16,11 +16,9 @@ set seedvalue=!RANDOM!
 
 rem ******* CAMBIO MOMENTANEAMENTE LA JAVA VERSION PER FAR FUNZIONARE EMMA*******
 java -version
-echo Setting JAVA_HOME
-rem set JAVA_HOME=.\java
-rem echo JAVA_HOME = %JAVA_HOME%
-rem set PATH=.\java\java.exe;%PATH%"
-set java1.8_path=".\java-1.8\jre1.8.0_281\bin\java.exe"
+set java1.8_path=%4
+echo JAVA 1.8:
+rem VERIFICO CHE SIA STATA TROVATA LA JAVA 1.8
 echo Display java version 
 %java1.8_path% -version
 REM percorso della cartella dove è ubicato il JAR di EMMA
