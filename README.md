@@ -6,9 +6,9 @@ All’interno della cartella “src” è presente il package runTests all’int
 della cartella “bin” sono presenti i file .class.
 Per eseguire l’applicazione ci sono due possibilità:
 
-1.	Lanciare l’applicazione da linea di comando, dopo essersi posizionati all’interno della cartella generale che contiene tutti i file, 
+1.	Lanciare l’applicazione da linea di comando, dopo essersi posizionati all’interno della cartella che verrà scaricata, 
 	mediante il comando: java -cp .\external_jars\jcommon-1.0.23.jar;.\external_jars\jfreechart-1.0.19.jar;.\bin runTests.Run
-2.	Lanciare l’applicazione mediante eseguibile jar, dopo essersi posizionati all’interno della cartella generale, mediante il comando: 
+2.	Lanciare l’applicazione mediante eseguibile jar, dopo essersi posizionati all’interno della cartella che verrà scaricata, mediante il comando: 
 	java -jar run.jar
 
 All’avvio verrà chiesto di inserire i seguenti parametri: percorso del file java.exe della jre 1.8  (esempio "C:\Program Files (x86)\Java\jre1.8.0_281\bin\java.exe"), numero di sessioni di test in parallelo, nome dell’applicazione testata e il time limit per la generazione dei test (cioè la quantità di tempo da dedicare ad ogni classe  dell’applicazione testata per la generazione dei test).
