@@ -14,8 +14,13 @@ import java.util.regex.Pattern;
 
 public class ClasseCondivisa{
 	private boolean available = false;
+	private String currentDate;
+	private String nomeApplicazione;
 	
-	
+	public ClasseCondivisa(String currentDate, String nomeApplicazione) {
+		this.currentDate = currentDate;
+		this.nomeApplicazione = nomeApplicazione;
+	}
 	 public synchronized void letturaFileCondiviso() {
 	      while (available == false) {
 	         try {
@@ -27,7 +32,7 @@ public class ClasseCondivisa{
 			}
 	      }
 	    //********LETTURA  FILE********
-		File f = new File("LetturaCoverage.txt");
+		File f = new File(".\\"+this.nomeApplicazione+"-"+this.currentDate+"\\LetturaCoverage.txt");
 		if ( !f.exists() )
 		{ System.out.println("il txt non esiste!");
 		return;
@@ -86,7 +91,7 @@ public class ClasseCondivisa{
 		         } 
 		      }
 		   //*****SCRITTURA SU FILE*****
-		   File f1 = new File("LetturaCoverage.txt");
+		   File f1 = new File(".\\"+this.nomeApplicazione+"-"+this.currentDate+"\\LetturaCoverage.txt");
 		   
 		   FileWriter fw = null;
 		   try {
