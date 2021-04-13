@@ -26,30 +26,32 @@ import org.jfree.ui.TextAnchor;
 
 public class Produttore  extends Thread{
 	private ClasseCondivisa c;
-	private ArrayList<Integer> arrayLOC; //conterr‡ i valori di LOC della sessione
+	private ArrayList<Double> arrayLOC; //conterr√† i valori di LOC della sessione
 	private String nomeApplicazione;
 	private int timeLimit;
 	private String javaPath; //percorso della jre 1.8
+	private String currentDate;
 	
 	
-	public Produttore(ClasseCondivisa c, String nomeApplicazione, int timeLimit, String javaPath) {
+	public Produttore(ClasseCondivisa c, String nomeApplicazione, int timeLimit, String javaPath, String currentDate) {
 		this.c = c;
 		this.arrayLOC = new ArrayList<>();
 		this.nomeApplicazione = nomeApplicazione;
 		this.timeLimit = timeLimit;
 		this.javaPath = javaPath;
+		this.currentDate = currentDate;
 	}
-	public ArrayList<Integer> getarrayLOC(){
+	public ArrayList<Double> getarrayLOC(){
 		return this.arrayLOC;
 	}
-	
+	/*
 	public void setarrayLOC(){
 		this.arrayLOC.add(100, 100);
-	}
+	}*/
 	private void incrementValue(Map<String,Integer> map, String key)
     {
         Integer count = map.get(key);
-        //se non c'Ë nessun errore nella lista lo inserico con conteggio 1
+        //se non c'√® nessun errore nella lista lo inserico con conteggio 1
          if (count == null) {
             map.put(key, 1);
         }
@@ -63,7 +65,7 @@ public class Produttore  extends Thread{
 	 private  int counterFile(){
 		Pattern p = Pattern.compile("EsecuzioneTestCiclo\\d+[.]txt");
 		int counter =0;
-        File dir = new File(".\\ErrorTest_"+getName());
+        File dir = new File(".\\"+this.nomeApplicazione+"-"+this.currentDate+"\\"+this.nomeApplicazione+"_ErrorTest_"+getName());
         if(!dir.exists())
         	return counter;
         
@@ -106,7 +108,7 @@ public class Produttore  extends Thread{
 	
 			boolean takeNext = false;
 	
-			String ultimaLinea = ""; //mi servir‡ per prendere l'ultima linea letta cioË quella con il numero di test eseguiti
+			String ultimaLinea = ""; //mi servir√† per prendere l'ultima linea letta cio√® quella con il numero di test eseguiti
 			//String testo = "";
 			while (linea != null){ 
 				try {
@@ -118,7 +120,7 @@ public class Produttore  extends Thread{
 						incrementValue(map, linea);
 						takeNext = false;
 					}
-					//se la linea inizia con un numero seguito da ) vuol dire che Ë il fallimento di un test (suppongo non pi˘ di 99 test)
+					//se la linea inizia con un numero seguito da ) vuol dire che √® il fallimento di un test (suppongo non pi√π di 99 test)
 					if(linea!= null && linea.matches("^[0-9].*$") && ((linea.indexOf(")")==1||linea.indexOf(")")==2)))
 						takeNext = true;
 				} catch (IOException e) {
@@ -144,22 +146,23 @@ public class Produttore  extends Thread{
 			return testEseguiti;
 	 }
 	 
-	 //verr‡ chiamata quando verr‡ raggiunto il 60% di coverage
-	 private void reachedCoverageT60(int indice, int coverage) {
+	 //verr√† chiamata quando verr√† raggiunto il 60% di coverage
+	 private void reachedCoverageT60(int indice, Double coverage) {
 		XYLineAnnotation line = new XYLineAnnotation(indice, 0, indice, coverage, new BasicStroke(1.0f), Color.BLACK);
  		
+		System.out.println("\nil "+getName()+" ha raggiunto il criterio T60% al ciclo "+indice);
  		//etichetta della linea
  		ValueMarker marker = new ValueMarker(indice, Color.white, new BasicStroke(1.0f));  
- 		marker.setLabel(getName()+" t60%"); 
- 		marker.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
- 		marker.setLabelTextAnchor(TextAnchor.BOTTOM_RIGHT);
+ 		marker.setLabel(" "+getName()+" t60%"); 
+ 		marker.setLabelAnchor(RectangleAnchor.BOTTOM_LEFT);
+ 		marker.setLabelTextAnchor(TextAnchor.BOTTOM_LEFT);
  		marker.setLabelPaint(Color.BLACK);
  		DrawLOC.getPlot().addAnnotation(line);
  		DrawLOC.getPlot().addDomainMarker(marker);
 		 
 	 }
 	 
-	 private boolean reachedCoverageT50(int indice, ArrayList<Integer> array) {
+	 private boolean reachedCoverageT50(int indice, ArrayList<Double> array) {
 		 boolean equal = true;
 		 for(int i=(indice/2)+1; i<indice && equal; i++) {
 			 if(!array.get(i).equals(array.get(i+1))) {
@@ -167,13 +170,14 @@ public class Produttore  extends Thread{
 			 }
 		 }
 		 if(equal) {
+			 System.out.println("\nil "+getName()+" ha raggiunto il criterio T50% al ciclo "+indice);
 			XYLineAnnotation line = new XYLineAnnotation(indice, 0, indice, array.get(indice), new BasicStroke(1.0f), Color.BLACK);
 			 		
 		 	//etichetta della linea
 		 	ValueMarker marker = new ValueMarker(indice, Color.white, new BasicStroke(1.0f));  
-		 	marker.setLabel(getName()+" t50%"); 
-		 	marker.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
-		 	marker.setLabelTextAnchor(TextAnchor.BOTTOM_RIGHT);
+		 	marker.setLabel(" "+getName()+" t50%"); 
+		 	marker.setLabelAnchor(RectangleAnchor.BOTTOM_LEFT);
+		 	marker.setLabelTextAnchor(TextAnchor.BOTTOM_LEFT);
 		 	marker.setLabelPaint(Color.BLACK);
 		 	DrawLOC.getPlot().addAnnotation(line);
 		 	DrawLOC.getPlot().addDomainMarker(marker);
@@ -182,20 +186,24 @@ public class Produttore  extends Thread{
 				 
 	  }
 	 
-	 private int reachedCoverageAIO(ArrayList<Integer> array, int indice) {
+	 private int reachedCoverageAIO(ArrayList<Double> array, int indice) {
 		 //XYDataItem lastValue = new XYDataItem(0, 0);
 		 int i=0;
+		 //se il numero di elementi della serie Unione √® maggiore di quello del thread non posso fare il controllo
+		 if(Run.getDatasetLOC().getSeries("Unione_Sessioni").getItemCount() > Run.getDatasetLOC().getSeries(getName()).getItemCount())
+			 return indice;
 		 for(; i<Run.getDatasetLOC().getSeries("Unione_Sessioni").getItemCount(); i++) {
 			 if(Run.getDatasetLOC().getSeries(getName()).getDataItem(i).equals(Run.getDatasetLOC().getSeries("Unione_Sessioni").getDataItem(i))) {
 				if(i>=indice) {
+					System.out.println("\nil "+getName()+" ha raggiunto il criterio AIO al ciclo "+i);
 					 XYLineAnnotation line = new XYLineAnnotation(i, 0, i, array.get(i), new BasicStroke(1.0f), Color.BLACK);
 			 		
 					 //etichetta della linea
 					 ValueMarker marker = new ValueMarker(i, Color.white, new BasicStroke(1.0f));  // position is the value on the axis
-					 marker.setLabel(getName()+" T-AIO");
+					 marker.setLabel(" "+getName()+" T-AIO");
 				 
-					 marker.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
-					 marker.setLabelTextAnchor(TextAnchor.BOTTOM_RIGHT);
+					 marker.setLabelAnchor(RectangleAnchor.BOTTOM_LEFT);
+					 marker.setLabelTextAnchor(TextAnchor.BOTTOM_LEFT);
 					 marker.setLabelPaint(Color.BLACK);
 					 DrawLOC.getPlot().addAnnotation(line);
 					 DrawLOC.getPlot().addDomainMarker(marker);
@@ -209,20 +217,20 @@ public class Produttore  extends Thread{
 	 
 	public void run() {
 		try {
-			Runtime.getRuntime().exec("cmd /c start \"\" starter6Randoop.bat "+" "+this.nomeApplicazione+" "+this.timeLimit+" "+getName()+" "+this.javaPath);
+			Runtime.getRuntime().exec("cmd /c start \"\" starter6Randoop.bat "+" "+this.nomeApplicazione+" "+this.timeLimit+" "+getName()+" "+this.javaPath+" "+this.currentDate);
 		} catch (IOException e) {
 			System.out.println("ECCEZIONE SULLA ESECUZIONE DEL .bat");
 			e.printStackTrace();
 		}
-		
+		String outputdir = this.nomeApplicazione+"-"+this.currentDate;
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss"); //per convertire l'ultima modifica del file nel formato MM/dd/yyyy HH:mm:ss
-		File f = new File("sessioncoverageLOC_"+getName()+".txt");
-		File fileEsecuzioneTest = new File(".\\ErrorTest_"+getName()+"\\esecuzione_test.bat");
+		File f = new File(".\\"+outputdir+"\\sessioncoverageLOC_"+getName()+".txt");
+		File fileEsecuzioneTest = new File(".\\"+outputdir+"\\"+this.nomeApplicazione+"_ErrorTest_"+getName()+"\\esecuzione_test.bat");
 		
 		//mi serve definire il file ErrorTest per controllare di non eseguire due volte lo stesso
 		SimpleDateFormat sdfErrorTest = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss"); 
-		File errorTestFile =  new File(".\\ErrorTest_"+getName()+"\\ErrorTest.java");
+		File errorTestFile =  new File(".\\"+outputdir+"\\"+this.nomeApplicazione+"_ErrorTest_"+getName()+"\\ErrorTest.java");
 		
 		//la prima volta attendo la creazione del file da parte dello script per le successive controllo che la data di modifica sia cambiata
 		while(!f.exists());
@@ -234,7 +242,7 @@ public class Produttore  extends Thread{
 		int cicli = 0;
 		
 		//VARIABILI RELATIVE ALL'ESECUZIONE DEI TEST JUNIT
-		 Map<String, Integer> mapErrori = new HashMap<String, Integer>(); //conterr‡ la lista degli errori: errore->occorrenza
+		 Map<String, Integer> mapErrori = new HashMap<String, Integer>(); //conterr√† la lista degli errori: errore->occorrenza
          
          int fileEsecuzioneLetti=0; //contatore dei file contententi i risultati di una esecuizione di ErrorTest.java letti
          int cicloEsecuzioneTest=0; 
@@ -266,10 +274,22 @@ public class Produttore  extends Thread{
 				BufferedReader re = new BufferedReader (fe);
 				String linea = null;
 				
+				ArrayList<Double> vettoreAppoggio = new ArrayList<>();
+				String stringaAppoggio = "";
+				Double locCoperti = 0.0;
+				Double locTotali = 0.0;
+				
 				//attendo che il file venga scritto dallo script (la prima volta), considerarne l'utilizzo visto che viene confrontato l'orario
+				//le varie righe del file sessioncoverageLOC sono scritte nella forma LOC = locCoperti/locTotali
 				while(linea == null) {
 					try {
 						linea = re.readLine();
+						stringaAppoggio = linea;
+						stringaAppoggio = stringaAppoggio.replace(",", ".");
+						locCoperti = Double.parseDouble((String) stringaAppoggio.subSequence(stringaAppoggio.indexOf('=')+1, stringaAppoggio.indexOf('/')));
+						locTotali = Double.parseDouble((String) stringaAppoggio.substring(stringaAppoggio.indexOf('/')+1));
+						vettoreAppoggio.add((locCoperti/locTotali)*100);
+						//System.out.println("coverage -> "+locCoperti+"/"+locTotali+"="+vettoreAppoggio.get(vettoreAppoggio.size()-1)+"%");
 					} catch (IOException e1) {
 						System.out.println("ECCEZIONE SULLA PRIMA READLINE DEL PRODUTTORE");
 						e1.printStackTrace();
@@ -282,7 +302,15 @@ public class Produttore  extends Thread{
 					try {
 						testo+=linea+"\n";
 						linea = re.readLine();
-						//System.out.println("produttore, ho letto= "+linea+" e lo vado a scrivere");
+						if(linea!=null) {
+							stringaAppoggio = linea;
+							stringaAppoggio = stringaAppoggio.replace(",", ".");
+							locCoperti = Double.parseDouble((String) stringaAppoggio.subSequence(stringaAppoggio.indexOf('=')+1, stringaAppoggio.indexOf('/')));
+							locTotali = Double.parseDouble((String) stringaAppoggio.substring(stringaAppoggio.indexOf('/')+1));
+							vettoreAppoggio.add((locCoperti/locTotali)*100);
+							//System.out.println("coverage -> "+locCoperti+"/"+locTotali+"="+vettoreAppoggio.get(vettoreAppoggio.size()-1)+"%");
+							//System.out.println("produttore, ho letto= "+linea+" e lo vado a scrivere");
+						}
 					} catch (IOException e) {
 						System.out.println("ECCEZIONE SULLA SECONDA READLINE DEL PRODUTTORE");
 						e.printStackTrace();
@@ -297,14 +325,15 @@ public class Produttore  extends Thread{
 					e.printStackTrace();
 				}
 		
-				testo=testo.replace("%", "%%");
-				//dalla stringa in ingresso mi prendo tutte le percentuali numeriche e le plotto
-				Pattern p = Pattern.compile("\\d+");
-				Matcher m = p.matcher(testo);
+				//testo=testo.replace("%", "%%"); //serviva nel caso di percentuali intere
+				//dalla stringa in ingresso mi prendo tutte le percentuali numeriche e le plotto (usato nel caso di percentuali intere)
+				//Pattern p = Pattern.compile("\\d+");
+				//Matcher m = p.matcher(testo);
 				
-				for (int i=0; m.find(); i++) {
+				for (int i=0; i<vettoreAppoggio.size(); i++) {
 					if(i >= cicli) {
-						this.arrayLOC.add(Integer.parseInt(m.group()));
+						this.arrayLOC.add(vettoreAppoggio.get(i));
+					
 						//System.out.println(getName()+"array["+i+"]= "+arrayLOC.get(i));
 						seriesLOC.add(i, this.arrayLOC.get(i));
 						
@@ -318,7 +347,7 @@ public class Produttore  extends Thread{
 								reachedT50 = reachedCoverageT50(i, this.arrayLOC);
 						
 						//AIO
-						//controllos per assicurarmi che sia stata creata la serie Unione_Sessioni
+						//controllo per assicurarmi che sia stata creata la serie Unione_Sessioni
 						if(cicli>4) {
 							if(!Run.getDatasetLOC().getSeries("Unione_Sessioni").isEmpty()) {
 								//System.out.println("chiamo AIO su indice: "+lastIndexAIO);
@@ -331,13 +360,13 @@ public class Produttore  extends Thread{
 				
 				cicli = this.arrayLOC.size();
 				
-				//se esiste la cartella ErroTest corrispondente e se il file ErrorTest Ë stato modificato, vado a eseguire i test
+				//se esiste la cartella ErroTest corrispondente e se il file ErrorTest √® stato modificato, vado a eseguire i test
 				
 				if(primaEsecuzioneTest) {
 					if(fileEsecuzioneTest.exists()) {
 	    				errorTestLastModify = sdfErrorTest.format(errorTestFile.lastModified());
 						try {
-		    				Runtime.getRuntime().exec("cmd /c start cmd.exe /K \"cd ErrorTest_"+getName()+" && esecuzione_test.bat\""+" "+cicli);
+		    				Runtime.getRuntime().exec("cmd /c start cmd.exe /K \"cd "+outputdir+"\\"+this.nomeApplicazione+"_ErrorTest_"+getName()+" && esecuzione_test.bat\""+" "+cicli);
 		    				primaEsecuzioneTest = false;
 		    			} catch (IOException e) {
 		    				System.out.println("ECCEZIONE SULLA PRIMA ESECUZIONE DEL .bat di esecuzione dei test");
@@ -347,7 +376,7 @@ public class Produttore  extends Thread{
 				}else if(!(errorTestLastModify.equals(sdfErrorTest.format(errorTestFile.lastModified())))) {
     				errorTestLastModify = sdfErrorTest.format(errorTestFile.lastModified());
 					try {
-	    				Runtime.getRuntime().exec("cmd /c start cmd.exe /K \"cd ErrorTest_"+getName()+" && esecuzione_test.bat\""+" "+cicli);
+	    				Runtime.getRuntime().exec("cmd /c start cmd.exe /K \"cd "+outputdir+"\\"+this.nomeApplicazione+"_ErrorTest_"+getName()+" && esecuzione_test.bat\""+" "+cicli);
 	    				
 	    			} catch (IOException e) {
 	    				System.out.println("ECCEZIONE SULLA ESECUZIONE DEL .bat di esecuzione dei test");
@@ -359,7 +388,7 @@ public class Produttore  extends Thread{
 				int count = counterFile();
 				if(fileEsecuzioneLetti<count) {
 					while(fileEsecuzioneLetti<count) {
-						File fileRisultatiEsecuzioneTest = new File(".\\ErrorTest_"+getName()+"\\EsecuzioneTestCiclo"+cicloEsecuzioneTest+".txt");
+						File fileRisultatiEsecuzioneTest = new File(".\\"+outputdir+"\\"+this.nomeApplicazione+"_ErrorTest_"+getName()+"\\EsecuzioneTestCiclo"+cicloEsecuzioneTest+".txt");
 						if(fileRisultatiEsecuzioneTest.exists()) {
 							testEseguiti+=aggiornaMap(mapErrori, cicloEsecuzioneTest, fileRisultatiEsecuzioneTest);
 							fileEsecuzioneLetti++;
@@ -372,7 +401,7 @@ public class Produttore  extends Thread{
 						testFalliti+= entry.getValue();
 					}
 					
-					 File fileReport = new File(".\\ErrorTest_"+getName()+"\\reportErrori.txt");
+					 File fileReport = new File(".\\"+outputdir+"\\"+this.nomeApplicazione+"_ErrorTest_"+getName()+"\\reportErrori.txt");
 					   
 					 FileWriter fw = null;
 					 try {
