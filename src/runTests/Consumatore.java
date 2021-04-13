@@ -22,22 +22,30 @@ public class Consumatore extends Thread{
 	private ClasseCondivisa c;
 	private int numSessioni;
 	private String javaPath; //percorso della jre 1.8
-	private ArrayList<Integer> arrayLOCunion; //conterr� i valori di LOC della sessione
+	private ArrayList<Double> arrayLOCunion; //conterrà i valori di LOC della sessione
+	private String currentDate;
+	private String nomeApplicazione;
 	
 	
-	public Consumatore(ClasseCondivisa c, int num, String javaPath) {
+	public Consumatore(ClasseCondivisa c, int num, String javaPath, String currentDate, String nomeApplicazione) {
 		this.c = c;
 		this.numSessioni=num;
 		this.arrayLOCunion = new ArrayList<>();
 		this.javaPath = javaPath;
+		this.currentDate = currentDate;
+		this.nomeApplicazione = nomeApplicazione;
 	}
 	
-	public ArrayList<Integer> getarrayLOCunion(){
+	public ArrayList<Double> getarrayLOCunion(){
 		return this.arrayLOCunion;
 	}
 	
-	private boolean reachedCoverageAEQ(ArrayList<Integer> array, int indice) {
+	private boolean reachedCoverageAEQ(ArrayList<Double> array, int indice) {
 		 boolean equal = true;
+		 //se il numero di serie create è minore di num+1 non posso ancora fare il controllo
+		 if(Run.getDatasetLOC().getSeriesCount() < (this.numSessioni+1)) {
+			 return false;
+		 }
 		 for(int i=1; i<=this.numSessioni; i++) {
 			 if(Run.getDatasetLOC().getSeries("Thread-"+i).getItemCount()<(indice+1))
 				 return false;
@@ -49,14 +57,15 @@ public class Consumatore extends Thread{
 			 
 		 }
 		 if(equal) {
+			 	System.out.println("\nle sessioni hanno raggiunto il criterio AEQ al ciclo "+indice);
 				XYLineAnnotation line = new XYLineAnnotation(indice, 0, indice, array.get(indice), new BasicStroke(1.0f), Color.BLACK);
 			 		
 			 	//etichetta della linea
 			 	ValueMarker marker = new ValueMarker(indice, Color.white, new BasicStroke(1.0f));  // position is the value on the axis
-			 	marker.setLabel("T-AEQ");
+			 	marker.setLabel(" T-AEQ");
 			 
-			 	marker.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
-			 	marker.setLabelTextAnchor(TextAnchor.BOTTOM_RIGHT);
+			 	marker.setLabelAnchor(RectangleAnchor.BOTTOM_LEFT);
+			 	marker.setLabelTextAnchor(TextAnchor.BOTTOM_LEFT);
 			 	marker.setLabelPaint(Color.BLACK);
 			 	DrawLOC.getPlot().addAnnotation(line);
 			 	DrawLOC.getPlot().addDomainMarker(marker);
@@ -64,8 +73,9 @@ public class Consumatore extends Thread{
 		 return equal;
 	 }
 	public void run() {
+		String outputdir = this.nomeApplicazione+"-"+this.currentDate;
 		try {
-			Runtime.getRuntime().exec("cmd /c start \"\" create_coverageUnion.bat "+" "+this.numSessioni+" "+this.javaPath);
+			Runtime.getRuntime().exec("cmd /c start \"\" create_coverageUnion.bat "+" "+this.numSessioni+" "+this.javaPath+" "+this.currentDate+" "+this.nomeApplicazione);
 		} catch (IOException e) {
 			System.out.println("ECCEZIONE SULLA ESECUZIONE DEL .bat");
 			e.printStackTrace();
@@ -73,7 +83,7 @@ public class Consumatore extends Thread{
 		
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss"); //per convertire l'ultima modifica del file nel formato MM/dd/yyyy HH:mm:ss
-		File f = new File("sessioncoverageLOC_Union.txt");
+		File f = new File(".\\"+outputdir+"\\sessioncoverageLOC_Union.txt");
 		
 		while(!f.exists());
 		
@@ -99,9 +109,20 @@ public class Consumatore extends Thread{
 				BufferedReader re = new BufferedReader (fe);
 				String linea = null;
 				
+				ArrayList<Double> vettoreAppoggio = new ArrayList<>();
+				Double locCoperti = 0.0;
+				Double locTotali = 0.0; 
+				String stringaAppoggio = "";
+				
 				while(linea == null) {
 					try {
 						linea = re.readLine();
+						stringaAppoggio = linea;
+						stringaAppoggio = stringaAppoggio.replace(",", ".");
+						locCoperti = Double.parseDouble((String) stringaAppoggio.subSequence(stringaAppoggio.indexOf('=')+1, stringaAppoggio.indexOf('/')));
+						locTotali = Double.parseDouble((String) stringaAppoggio.substring(stringaAppoggio.indexOf('/')+1));
+						vettoreAppoggio.add((locCoperti/locTotali)*100);
+						//System.out.println("coverage unione -> "+locCoperti+"/"+locTotali+"="+vettoreAppoggio.get(vettoreAppoggio.size()-1)+"%");
 					} catch (IOException e1) {
 						System.out.println("ECCEZIONE SULLA PRIMA READLINE DEL PRODUTTORE");
 						e1.printStackTrace();
@@ -114,6 +135,14 @@ public class Consumatore extends Thread{
 					try {
 						testo+=linea+"\n";
 						linea = re.readLine();
+						if(linea!=null) {
+							stringaAppoggio = linea;
+							stringaAppoggio = stringaAppoggio.replace(",", ".");
+							locCoperti = Double.parseDouble((String) stringaAppoggio.subSequence(stringaAppoggio.indexOf('=')+1, stringaAppoggio.indexOf('/')));
+							locTotali = Double.parseDouble((String) stringaAppoggio.substring(stringaAppoggio.indexOf('/')+1));
+							vettoreAppoggio.add((locCoperti/locTotali)*100);
+							//System.out.println("coverage unione-> "+locCoperti+"/"+locTotali+"="+vettoreAppoggio.get(vettoreAppoggio.size()-1)+"%");
+						}
 					} catch (IOException e) {
 						System.out.println("ECCEZIONE SULLA SECONDA READLINE DEL PRODUTTORE");
 						e.printStackTrace();
@@ -128,13 +157,14 @@ public class Consumatore extends Thread{
 					e.printStackTrace();
 				}
 		
+				/*
 				testo=testo.replace("%", "%%");
 				Pattern p = Pattern.compile("\\d+");
-				Matcher m = p.matcher(testo);
+				Matcher m = p.matcher(testo);*/
 				
-				for (int i=0; m.find(); i++) {
+				for (int i=0; i<vettoreAppoggio.size(); i++) {
 					if(i >= cicli) {
-						this.arrayLOCunion.add(Integer.parseInt(m.group()));
+						this.arrayLOCunion.add(vettoreAppoggio.get(i));
 						series.add(i, this.arrayLOCunion.get(i));
 					}
 				}
