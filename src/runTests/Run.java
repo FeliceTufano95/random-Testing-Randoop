@@ -3,6 +3,8 @@ package runTests;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import org.jfree.chart.annotations.XYLineAnnotation;
@@ -20,10 +22,17 @@ public class Run {
 	public static void main(String[] args) throws Exception {
 		//System.out.print(System.getProperty("user.dir"));
 		//System.out.println(Thread.currentThread().getName());
-		ClasseCondivisa cc = new ClasseCondivisa();
 		int num = 0;
+		//prendo la data attuale che mi serve per creare la cartella contenente i risultati
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+		LocalDateTime now = LocalDateTime.now();  
+		String currentDate = dtf.format(now); 
+		currentDate = currentDate.replace("/","-");
+		currentDate =  currentDate.replace(" ", "--");
+		currentDate =  currentDate.replace(":", "-");
+		System.out.println(currentDate); 
 		input = new Scanner(System.in); 
-		System.out.println("inserisci il path dove è situato la jre 1.8 (es. \"C:\\Program Files (x86)\\Java\\jre1.8.0_281\\bin\\java.exe\")");
+		System.out.println("inserisci il path dove Ã¨ situato la jre 1.8 (es. \"C:\\Program Files (x86)\\Java\\jre1.8.0_281\\bin\\java.exe\")");
 		String javaPath = input.nextLine();
 		System.out.println("inserisci il numero di sessioni di test in parallelo: ");
 		num = input.nextInt();
@@ -33,13 +42,14 @@ public class Run {
 		int timeLimit = input.nextInt();
 		
 		System.out.println("\npercorso della jre indicato: "+javaPath);
+		ClasseCondivisa cc = new ClasseCondivisa(currentDate, nomeApplicazione);
 		Produttore[] p = new Produttore[num];
-		Consumatore c = new Consumatore(cc,num, javaPath);
+		Consumatore c = new Consumatore(cc,num, javaPath, currentDate, nomeApplicazione);
 		var ex = new DrawLOC(num);
 		var ex1 = new DrawErrorTest(num);
 		
 		for(int i=0; i<num; i++) {
-			p[i] = new Produttore(cc, nomeApplicazione, timeLimit, javaPath);
+			p[i] = new Produttore(cc, nomeApplicazione, timeLimit, javaPath, currentDate);
 			p[i].start();
 		}
 		c.start();
