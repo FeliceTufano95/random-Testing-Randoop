@@ -15,7 +15,7 @@ All’avvio verrà chiesto di inserire i seguenti parametri: percorso del file j
 
 I vari file di output generati, inerenti un' esecuzione dello strumento, verranno prodotti all'interno di una cartella che verrà identificata dal nome dell'applicazione testata e dalla data in cui è stato lanciato il software.
 
-Il programma è stato sviluppato con la versione 15 di Java, ma è stato testato anche per la versione 16.
+Il programma è stato sviluppato con la versione "java-SE 13", ma è stato testato anche per la versione 16.
 
 Per una documentazione dettagliata e una spiegazione degli output ottenuti, consultare il file "Random Testing Tufano.pdf"
 
