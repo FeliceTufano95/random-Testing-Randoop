@@ -9,8 +9,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.jfree.chart.annotations.XYLineAnnotation;
 import org.jfree.chart.plot.ValueMarker;
@@ -57,7 +55,6 @@ public class Consumatore extends Thread{
 			 
 		 }
 		 if(equal) {
-			 	System.out.println("\nle sessioni hanno raggiunto il criterio AEQ al ciclo "+indice);
 				XYLineAnnotation line = new XYLineAnnotation(indice, 0, indice, array.get(indice), new BasicStroke(1.0f), Color.BLACK);
 			 		
 			 	//etichetta della linea
@@ -66,7 +63,7 @@ public class Consumatore extends Thread{
 			 
 			 	marker.setLabelAnchor(RectangleAnchor.BOTTOM_LEFT);
 			 	marker.setLabelTextAnchor(TextAnchor.BOTTOM_LEFT);
-			 	marker.setLabelPaint(Color.BLACK);
+			 	marker.setLabelPaint(Color.BLUE);
 			 	DrawLOC.getPlot().addAnnotation(line);
 			 	DrawLOC.getPlot().addDomainMarker(marker);
 			 }
@@ -93,7 +90,7 @@ public class Consumatore extends Thread{
 		
 		String lastModify = sdf.format(f.lastModified());
 		
-		
+		int elem = 0;
 		int cicli = 0;
 		while(true) {
 			if (!(lastModify.equals(sdf.format(f.lastModified())))) {
@@ -162,7 +159,8 @@ public class Consumatore extends Thread{
 				Pattern p = Pattern.compile("\\d+");
 				Matcher m = p.matcher(testo);*/
 				
-				for (int i=0; i<vettoreAppoggio.size(); i++) {
+				elem = vettoreAppoggio.size();
+				for (int i=0; i<elem; i++) {
 					if(i >= cicli) {
 						this.arrayLOCunion.add(vettoreAppoggio.get(i));
 						series.add(i, this.arrayLOCunion.get(i));
