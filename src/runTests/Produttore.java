@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 
 import org.jfree.chart.annotations.XYLineAnnotation;
 import org.jfree.chart.plot.ValueMarker;
-import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
@@ -150,13 +149,12 @@ public class Produttore  extends Thread{
 	 private void reachedCoverageT60(int indice, Double coverage) {
 		XYLineAnnotation line = new XYLineAnnotation(indice, 0, indice, coverage, new BasicStroke(1.0f), Color.BLACK);
  		
-		System.out.println("\nil "+getName()+" ha raggiunto il criterio T60% al ciclo "+indice);
  		//etichetta della linea
  		ValueMarker marker = new ValueMarker(indice, Color.white, new BasicStroke(1.0f));  
  		marker.setLabel(" "+getName()+" t60%"); 
  		marker.setLabelAnchor(RectangleAnchor.BOTTOM_LEFT);
  		marker.setLabelTextAnchor(TextAnchor.BOTTOM_LEFT);
- 		marker.setLabelPaint(Color.BLACK);
+ 		marker.setLabelPaint(Color.GREEN);
  		DrawLOC.getPlot().addAnnotation(line);
  		DrawLOC.getPlot().addDomainMarker(marker);
 		 
@@ -170,7 +168,6 @@ public class Produttore  extends Thread{
 			 }
 		 }
 		 if(equal) {
-			 System.out.println("\nil "+getName()+" ha raggiunto il criterio T50% al ciclo "+indice);
 			XYLineAnnotation line = new XYLineAnnotation(indice, 0, indice, array.get(indice), new BasicStroke(1.0f), Color.BLACK);
 			 		
 		 	//etichetta della linea
@@ -178,7 +175,7 @@ public class Produttore  extends Thread{
 		 	marker.setLabel(" "+getName()+" t50%"); 
 		 	marker.setLabelAnchor(RectangleAnchor.BOTTOM_LEFT);
 		 	marker.setLabelTextAnchor(TextAnchor.BOTTOM_LEFT);
-		 	marker.setLabelPaint(Color.BLACK);
+		 	marker.setLabelPaint(Color.RED);
 		 	DrawLOC.getPlot().addAnnotation(line);
 		 	DrawLOC.getPlot().addDomainMarker(marker);
 		 }
@@ -195,15 +192,14 @@ public class Produttore  extends Thread{
 		 for(; i<Run.getDatasetLOC().getSeries("Unione_Sessioni").getItemCount(); i++) {
 			 if(Run.getDatasetLOC().getSeries(getName()).getDataItem(i).equals(Run.getDatasetLOC().getSeries("Unione_Sessioni").getDataItem(i))) {
 				if(i>=indice) {
-					System.out.println("\nil "+getName()+" ha raggiunto il criterio AIO al ciclo "+i);
 					 XYLineAnnotation line = new XYLineAnnotation(i, 0, i, array.get(i), new BasicStroke(1.0f), Color.BLACK);
 			 		
 					 //etichetta della linea
 					 ValueMarker marker = new ValueMarker(i, Color.white, new BasicStroke(1.0f));  // position is the value on the axis
 					 marker.setLabel(" "+getName()+" T-AIO");
 				 
-					 marker.setLabelAnchor(RectangleAnchor.BOTTOM_LEFT);
-					 marker.setLabelTextAnchor(TextAnchor.BOTTOM_LEFT);
+					 marker.setLabelAnchor(RectangleAnchor.CENTER);
+					 marker.setLabelTextAnchor(TextAnchor.CENTER_LEFT);
 					 marker.setLabelPaint(Color.BLACK);
 					 DrawLOC.getPlot().addAnnotation(line);
 					 DrawLOC.getPlot().addDomainMarker(marker);
@@ -259,6 +255,8 @@ public class Produttore  extends Thread{
 		boolean reachedT60 = false;
 		boolean reachedT50 = false;
 		int lastIndexAIO = 0;
+		
+		int elem = 0; //vettore di appoggio
 		while(true) {
 			
 			if (!(lastModify.equals(sdf.format(f.lastModified())))) {
@@ -330,7 +328,8 @@ public class Produttore  extends Thread{
 				//Pattern p = Pattern.compile("\\d+");
 				//Matcher m = p.matcher(testo);
 				
-				for (int i=0; i<vettoreAppoggio.size(); i++) {
+				elem = vettoreAppoggio.size();
+				for (int i=0; i<elem; i++) {
 					if(i >= cicli) {
 						this.arrayLOC.add(vettoreAppoggio.get(i));
 					
