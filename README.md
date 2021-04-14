@@ -13,9 +13,9 @@ Per eseguire l’applicazione ci sono due possibilità:
 
 All’avvio verrà chiesto di inserire i seguenti parametri: percorso del file java.exe della jre 1.8  (esempio "C:\Program Files (x86)\Java\jre1.8.0_281\bin\java.exe"), numero di sessioni di test in parallelo, nome dell’applicazione testata e il time limit per la generazione dei test (cioè la quantità di tempo da dedicare ad ogni classe  dell’applicazione testata per la generazione dei test).
 
-I vari file di output generati, inerenti un' esecuzione dello strumento, verranno prodotti all'interno di questa cartella, tra i vari file presenti. Una successiva esecuzione dello strumento andrà a sovrascrivere i file prodotti in precedenza, con conseguente alterazione dei risultati. Pertanto per eseguire n volte il programma bisogna avere n versioni della cartella cosi presentata. E' stata effettuata una tale scelta operativa in considerazione della quantità di file che verranno prodotti, ritenendo quindi poco fluida e intuitiva la lettura degli output nel caso in cui le varie esecuzioni fossero tutte raggruppate in un un'unica cartella.
+I vari file di output generati, inerenti un' esecuzione dello strumento, verranno prodotti all'interno di una cartella che verrà identificata dal nome dell'applicazione testata e dalla data in cui è stato lanciato il software.
 
-Il programma è stato sviluppato in un ambiante di esecuzione "JavaSE-13" e JDK 13, ma è stato testato anche per la versione 16.
+Il programma è stato sviluppato con la versione 15 di Java, ma è stato testato anche per la versione 16.
 
 Per una documentazione dettagliata e una spiegazione degli output ottenuti, consultare il file "Random Testing Tufano.pdf"
 
